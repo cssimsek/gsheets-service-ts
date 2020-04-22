@@ -22,4 +22,5 @@ TypeScript utility to read specific ranges from and append to Google Sheets.
 4. Define the sheet id and range you wish to access:
    * Touch / create a file named sheet-range-ids.json under the src/secrets folder and add "spreadsheetId" and "range" properties referring to your target sheet id and range.
    * Or you can declare the "spreadsheetId" and "range" values when instantiating the SheetManager class: `new SheetManager(_spreadsheetId?: string, _range?: string);`
-5. To run the index.ts example implementation use `ts-node index.ts`.
+5. **IMPORTANT:** You'll now need to share the target sheet with the Service Account's email address. This allows the user to access the sheet via API calls.
+6. To run the index.ts example implementation use `ts-node index.ts`.
