@@ -1,0 +1,23 @@
+{
+  "name": "gsheets-service-ts",
+  "version": "1.0.0",
+  "description": "TS utility to read form and write to google sheets using googleapis sheets v4",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "tslint --project tsconfig.json",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "Cem Simsek",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^13.13.0",
+    "googleapis": "^49.0.0",
+    "ts-node": "^8.8.2"
+  },
+  "devDependencies": {
+    "tslint": "^5.12.0",
+    "typescript": "^3.2.2"
+  }
+}
