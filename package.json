@@ -2,6 +2,7 @@
   "name": "gsheets-service-ts",
   "version": "1.0.0",
   "description": "TS utility to read form and write to google sheets using googleapis sheets v4",
+  "private": true,
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
