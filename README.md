@@ -1,4 +1,4 @@
-# TS utility to read form and write to Google Sheets using googleapis sheets v4
+# TS utility to read from and write to Google Sheets using googleapis sheets v4
 ## Purpose
 TypeScript utility to read specific ranges from and append to Google Sheets.
 ## Dependencies:
