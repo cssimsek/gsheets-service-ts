@@ -1,7 +1,8 @@
 import { google } from 'googleapis';
+import keys from './secrets/credentials.json';
+import sheetRangeIds from './secrets/sheet-range-ids.json';
+
 const sheets = google.sheets('v4');
-const keys = require('./secrets/credentials.json');
-const sheetRangeIds = require('./secrets/sheet-range-ids.json');
 
 const jwtClient = new google.auth.JWT(
     keys.client_email,
@@ -38,8 +39,8 @@ export default class SheetManager {
 
     }
 
-    async checkAuthStatus(){
-       
+    async checkAuthStatus() {
+
         if (!this.authorized) {
             await this.authorize().then((tokens) => {
                 this.jwtClientToken = tokens as JwtClientToken;
@@ -58,7 +59,7 @@ export default class SheetManager {
     async getData() {
 
         await this.checkAuthStatus();
-        return new Promise((resolve,reject)=>{
+        return new Promise((resolve, reject) => {
             sheets.spreadsheets.values.get({
                 auth: jwtClient,
                 spreadsheetId: this.spreadsheetId,
@@ -91,7 +92,7 @@ export default class SheetManager {
     async appendData(newRowData: string[]) {
 
         await this.checkAuthStatus();
-        return new Promise((resolve,reject)=>{
+        return new Promise((resolve, reject) => {
             sheets.spreadsheets.values.append({
                 auth: jwtClient,
                 spreadsheetId: this.spreadsheetId,
