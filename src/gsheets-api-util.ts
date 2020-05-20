@@ -11,7 +11,7 @@ const jwtClient = new google.auth.JWT(
     undefined
 );
 
-class SheetManager {
+export default class SheetManager {
 
     spreadsheetId: string;
     range: string;
@@ -38,8 +38,8 @@ class SheetManager {
 
     }
 
-    async getData() {
-
+    async checkAuthStatus(){
+       
         if (!this.authorized) {
             await this.authorize().then((tokens) => {
                 this.jwtClientToken = tokens as JwtClientToken;
@@ -52,71 +52,74 @@ class SheetManager {
         } else {
             console.log('From memory');
         }
-        sheets.spreadsheets.values.get({
-            auth: jwtClient,
-            spreadsheetId: this.spreadsheetId,
-            range: this.range,
-        }, function (err, response) {
-            if (err) {
-                console.log('The API returned an error: ' + err);
-            } else {
-                if (response) {
-                    console.log(response.data.values);
-                    const values = response.data.values;
-                    if (values) {
-                        for (const row of values) {
-                            console.log(JSON.stringify(row));
+
+    }
+
+    async getData() {
+
+        await this.checkAuthStatus();
+        return new Promise((resolve,reject)=>{
+            sheets.spreadsheets.values.get({
+                auth: jwtClient,
+                spreadsheetId: this.spreadsheetId,
+                range: this.range,
+            }, function (err, response) {
+                if (err) {
+                    console.log('The API returned an error: ' + err);
+                    reject(err);
+                } else {
+                    if (response) {
+                        console.log(response.data.values);
+                        const values = response.data.values;
+                        if (values) {
+                            for (const row of values) {
+                                console.log(JSON.stringify(row));
+                            }
+                            resolve(response.data);
+                        } else {
+                            console.log('Found nothing...');
+                            resolve('Success with no response');
                         }
-                    } else {
-                        console.log('Found nothing...');
+
                     }
 
                 }
-
-            }
+            });
         });
     }
 
     async appendData(newRowData: string[]) {
 
-        if (!this.authorized) {
-            await this.authorize().then((tokens) => {
-                this.jwtClientToken = tokens as JwtClientToken;
-                console.log(this.jwtClientToken);
-            }).catch((err) => {
-                console.log(err.message)
-            });
-            this.authorized = true;
-            console.log(`Initial auth`);
-        } else {
-            console.log('From memory');
-        }
-        sheets.spreadsheets.values.append({
-            auth: jwtClient,
-            spreadsheetId: this.spreadsheetId,
-            range: this.range,
-            valueInputOption: 'RAW',
-            insertDataOption: 'INSERT_ROWS',
-            requestBody: {
-                'values': [
-                    newRowData
-                ]
-            }
-        }, function (err, response) {
-            if (err) {
-                console.log('The API returned an error: ' + err);
-            } else {
-                if (response) {
-                    console.log(response.data);
-                } else {
-                    console.log('No response received');
+        await this.checkAuthStatus();
+        return new Promise((resolve,reject)=>{
+            sheets.spreadsheets.values.append({
+                auth: jwtClient,
+                spreadsheetId: this.spreadsheetId,
+                range: this.range,
+                valueInputOption: 'RAW',
+                insertDataOption: 'INSERT_ROWS',
+                requestBody: {
+                    'values': [
+                        newRowData
+                    ]
                 }
-            }
+            }, function (err, response) {
+                if (err) {
+                    console.log('The API returned an error: ' + err);
+                    reject(err);
+                } else {
+                    if (response) {
+                        console.log(response.data);
+                        resolve(response.data);
+                    } else {
+                        console.log('No response received');
+                        resolve('Success with no response');
+                    }
+                }
+            });
         });
     }
-}
-
-export default SheetManager;
+};
 
 interface JwtClientToken {
     access_token: string;
